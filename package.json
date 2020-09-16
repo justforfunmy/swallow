@@ -3,13 +3,17 @@
   "version": "1.0.0",
   "main": "./src/main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "test": "mocha"
   },
   "dependencies": {
     "electron": "^10.1.2",
-    "eslint-config-airbnb-base": "^14.2.0"
+    "request": "^2.88.2"
   },
   "devDependencies": {
-    "eslint": "^7.9.0"
+    "eslint": "^7.9.0",
+    "eslint-config-airbnb-base": "^14.2.0",
+    "mocha": "^7.1.2",
+    "spectron": "^11.1.0"
   }
 }

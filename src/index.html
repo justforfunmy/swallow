@@ -10,9 +10,45 @@
       integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u"
       crossorigin="anonymous"
     />
+    <link rel="stylesheet" href="./styles/index.css" />
     <title>Swallow</title>
   </head>
   <body>
-    <button class="btn btn-primary">click</button>
+    <div id="root" class="root">
+      <form class="form-horizontal custom-form" id="form">
+        <div class="form-group">
+          <label for="inputEmail3" class="col-sm-1 control-label">Link</label>
+          <div class="col-sm-9">
+            <input
+              type="text"
+              class="form-control"
+              placeholder="Link"
+              id="link"
+              value="https://www.jianshu.com/users/recommended?seen_ids=&count=5&only_unfollowed=true"
+            />
+          </div>
+        </div>
+        <!-- <div class="form-group">
+          <label for="inputPassword3" class="col-sm-1 control-label">Password</label>
+          <div class="col-sm-9">
+            <input
+              type="password"
+              class="form-control"
+              id="inputPassword3"
+              placeholder="Password"
+            />
+          </div>
+        </div> -->
+        <div class="form-group">
+          <div class="col-sm-offset-1 col-sm-11">
+            <button type="button" class="btn btn-default" id="start-btn">Start</button>
+          </div>
+        </div>
+      </form>
+      <div class="main-content"></div>
+    </div>
+    <script>
+      require('./renderProcess/index.js')();
+    </script>
   </body>
 </html>
