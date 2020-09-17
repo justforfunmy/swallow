@@ -14,7 +14,7 @@ function createWindow() {
 
   // Open the DevTools.
   mainWindow.webContents.openDevTools();
-  mainWindow.maximize();
+  // mainWindow.maximize();
 }
 
 // This method will be called when Electron has finished
@@ -40,4 +40,4 @@ app.on('window-all-closed', function () {
 // In this file you can include the rest of your app's specific main process
 // code. You can also put them in separate files and require them here.
 
-require('./mainProcess/request');
+require('./mainProcess/communication');

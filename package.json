@@ -3,11 +3,14 @@
   "version": "1.0.0",
   "main": "./src/main.js",
   "scripts": {
-    "start": "electron .",
+    "start": "electron  .",
+    "dev": "electron --inspect .",
     "test": "mocha"
   },
   "dependencies": {
     "electron": "^10.1.2",
+    "puppeteer": "^5.3.0",
+    "puppeteer-core": "^5.3.0",
     "request": "^2.88.2"
   },
   "devDependencies": {
