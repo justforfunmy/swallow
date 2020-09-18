@@ -11,57 +11,67 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" href="./styles/index.css" />
-    <script src="./libs/jquery.min.js"></script>
     <title>Swallow</title>
   </head>
   <body>
     <div id="root" class="root">
-      <form class="form-horizontal custom-form" id="form">
-        <div class="form-group">
-          <label for="inputEmail3" class="col-sm-1 control-label">路径</label>
-          <div class="col-sm-9">
-            <input
-              type="text"
-              class="form-control"
-              placeholder="Link"
-              id="link"
-              value="https://www.jianshu.com/users/recommended?seen_ids=&count=5&only_unfollowed=true"
-            />
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-1 col-sm-11">
-            <button type="button" class="btn btn-success" id="collect-btn">添加采集数据项</button>
-            <button type="button" class="btn btn-default" id="start-btn">Start</button>
-          </div>
-        </div>
-      </form>
-      <div class="main-content"></div>
-      <div class="form-modal" id="form-modal">
-        <form class="form-horizontal form-modal-body">
+      <template id="form-template">
+        <form class="form-horizontal custom-form form-instance" id="form">
           <div class="form-group">
-            <label class="col-sm-2 control-label">字段名称</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" placeholder="比如：author" />
+            <label class="col-sm-1 control-label">名称</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" placeholder="Name" id="name" value="" />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">选择器</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" placeholder="比如：.author" />
+            <label class="col-sm-1 control-label">路径</label>
+            <div class="col-sm-9">
+              <input type="text" class="form-control" placeholder="Link" id="link" value="" />
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">数据值来源</label>
-            <div class="col-sm-10">
-              <input type="text" class="form-control" placeholder="比如：innerText" />
+            <label class="col-sm-1 control-label">采集项</label>
+            <div class="col-sm-9">
+              <textarea class="form-control" rows="3"></textarea>
             </div>
           </div>
-          <div class="form-group" style="text-align: center">
-            <button type="submit" class="btn btn-default">添加</button>
+          <div class="form-group">
+            <div class="col-sm-10" style="text-align: right">
+              <button type="button" class="btn btn-info collect-btn">添加采集数据项</button>
+            </div>
           </div>
         </form>
+      </template>
+      <div class="main-operation">
+        <button type="button" class="btn btn-primary" id="next-link">添加路径</button>
+        <button type="button" class="btn btn-danger" id="delete-link">删除路径</button>
+        <button type="button" class="btn btn-success" id="start-btn">开始</button>
       </div>
+    </div>
+    <div class="form-modal" id="form-modal">
+      <form class="form-horizontal form-modal-body">
+        <div class="form-group">
+          <label class="col-sm-2 control-label">字段名称</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="比如：author" id="field" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">选择器</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="比如：.author" id="selector" />
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="col-sm-2 control-label">数据值来源</label>
+          <div class="col-sm-10">
+            <input type="text" class="form-control" placeholder="比如：innerText" id="source" />
+          </div>
+        </div>
+        <div class="form-group" style="text-align: center">
+          <button type="button" class="btn btn-default" id="add-field">添加</button>
+        </div>
+      </form>
     </div>
     <script>
       require('./renderProcess/index.js')();

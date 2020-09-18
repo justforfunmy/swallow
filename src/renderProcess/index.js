@@ -1,4 +1,7 @@
+const Form = require('./form');
+
 module.exports = function () {
   console.log('render process');
-  require('./handler');
+  new Form();
+  require('./modal');
 };
