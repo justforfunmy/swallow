@@ -1,9 +1,14 @@
 const root = document.querySelector('#root');
-const template = document.querySelector('#form-template');
+const formTemplate = document.querySelector('#form-template');
+const trTemplate = document.querySelector('#tr-template');
 const nextLinkBtn = document.querySelector('#next-link');
 const deleteLinkBtn = document.querySelector('#delete-link');
 const formModal = document.querySelector('#form-modal');
-const { setTarget } = require('./modal');
+const startBtn = document.querySelector('#start-btn');
+const addFieldBtn = document.querySelector('#add-field');
+const fieldInput = document.querySelector('#field');
+const selectorInput = document.querySelector('#selector');
+const sourceInput = document.querySelector('#source');
 
 const { ipcRenderer } = require('electron');
 
@@ -17,17 +22,26 @@ class Form {
     this.initHandler();
   }
 
+  target = null;
+
   init() {
     this.add();
   }
 
+  resetModal() {
+    formModal.style.display = 'none';
+    fieldInput.value = '';
+    selectorInput.value = '';
+    sourceInput.value = '';
+  }
+
   add() {
-    const clone = document.importNode(template.content, true);
+    const clone = document.importNode(formTemplate.content, true);
     const collectBtn = clone.querySelector('.collect-btn');
     collectBtn.addEventListener('click', () => {
       formModal.style.display = 'block';
       const target = collectBtn.parentNode.parentNode.parentNode;
-      setTarget(target);
+      this.target = target;
     });
     root.appendChild(clone);
   }
@@ -40,9 +54,23 @@ class Form {
     }
   }
 
-  initHandler() {
-    const startBtn = document.querySelector('#start-btn');
+  addProperty(field, selector, source) {
+    const table = this.target.querySelector('table');
+    const tbody = table.querySelector('tbody');
+    let td = trTemplate.content.querySelectorAll('td');
+    td[0].textContent = field;
+    td[1].textContent = selector;
+    td[2].textContent = source;
+    const clone = document.importNode(trTemplate.content, true);
+    const deleteBtn = clone.querySelector('.delete-property');
+    deleteBtn.addEventListener('click', () => {
+      const tr = deleteBtn.parentNode;
+      tbody.removeChild(tr);
+    });
+    tbody.appendChild(clone);
+  }
 
+  initHandler() {
     startBtn.addEventListener('click', (e) => {
       e.preventDefault();
       const url =
@@ -56,6 +84,13 @@ class Form {
 
     deleteLinkBtn.addEventListener('click', (event) => {
       this.delete();
+    });
+
+    addFieldBtn.addEventListener('click', () => {
+      if (this.target) {
+        this.addProperty(fieldInput.value, selectorInput.value, sourceInput.value);
+        this.resetModal();
+      }
     });
   }
 }
