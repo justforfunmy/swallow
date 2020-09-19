@@ -70,12 +70,37 @@ class Form {
     tbody.appendChild(clone);
   }
 
+  getValues() {
+    const forms = root.querySelectorAll('form');
+    const formValues = {};
+    forms.forEach((item, idx) => {
+      const name = item.querySelector('input[name="name"]').value;
+      const link = item.querySelector('input[name="link"]').value;
+      const tbody = item.querySelector('tbody');
+      const trs = tbody.querySelectorAll('tr');
+      const properties = {};
+      trs.forEach((tr) => {
+        const tds = tr.querySelectorAll('td');
+        const name = tds[0].innerText;
+        const selector = tds[1].innerText;
+        const source = tds[1].innerText;
+        properties[name] = {
+          name,
+          selector,
+          source
+        };
+      });
+      formValues[idx] = { name, link, properties };
+    });
+    return formValues;
+  }
+
   initHandler() {
     startBtn.addEventListener('click', (e) => {
       e.preventDefault();
-      const url =
-        'https://club.jd.com/comment/productPageComments.action?callback=fetchJSON_comment98&productId=50647371545&score=0&sortType=5&page=0&pageSize=10&isShadowSku=0&fold=1';
-      ipcRenderer.send('start-crawl', url);
+      const values = this.getValues();
+      const destination = document.querySelector('#output').innerText;
+      ipcRenderer.send('start-crawl', values, destination);
     });
 
     nextLinkBtn.addEventListener('click', (event) => {
