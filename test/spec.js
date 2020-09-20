@@ -1,49 +1,48 @@
-const Application = require('spectron').Application;
-const assert = require('assert');
-const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
-const path = require('path');
+// const Application = require('spectron').Application;
+// const assert = require('assert');
+// const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
+// const path = require('path');
+const { spawn } = require('child_process');
+const puppeteer = require('puppeteer');
+const electron = require('electron');
+const { assert } = require('console');
 
-describe('Application launch', function () {
-  this.timeout(10000);
+describe('Application launch', async function () {
+  // this.timeout(10000);
 
-  before(function () {
-    this.app =
-      this.app ||
-      new Application({
-        // Your electron path can be any binary
-        // i.e for OSX an example path could be '/Applications/MyApp.app/Contents/MacOS/MyApp'
-        // But for the sake of the example we fetch it from our node_modules.
-        path: electronPath,
+  // const app = new Application({
+  //   path: electronPath,
+  //   args: [path.resolve(__dirname, '..')]
+  // });
 
-        // Assuming you have the following directory structure
+  // beforeEach(async (done) => {
+  //   await app.start();
+  //   done();
+  // });
 
-        //  |__ my project
-        //     |__ ...
-        //     |__ main.js
-        //     |__ package.json
-        //     |__ index.html
-        //     |__ ...
-        //     |__ test
-        //        |__ spec.js  <- You are here! ~ Well you should be.
+  // afterEach(async (done) => {
+  //   if (app && app.isRunning()) {
+  //     await app.stop();
+  //     done();
+  //   }
+  // });
 
-        // The following line tells spectron to look and use the main.js file
-        // and the package.json located 1 level above.
-        args: [path.join(__dirname, '..')]
-      });
-    return this.app.start();
-  });
+  // it('shows an initial window', async function (done) {
+  //   await app.client.waitUntilWindowLoaded();
+  //   return app.client.getWindowCount().then(function (count) {
+  //     assert.equal(count, 1);
+  //     // Please note that getWindowCount() will return 2 if `dev tools` are opened.
+  //     // assert.equal(count, 2)
+  //     done();
+  //   });
+  // });
 
-  after(function () {
-    if (this.app && this.app.isRunning()) {
-      return this.app.stop();
-    }
-  });
+  const spwanProcess = spawn(electron, ['.', '--remote-debugging-port=9200'], { shell: true });
+  const app = await puppeteer.connect({ browserURL: 'http://localhost:9200' });
+  const [page] = await app.pages();
 
-  it('shows an initial window', function () {
-    return this.app.client.getWindowCount().then(function (count) {
-      assert.equal(count, 1);
-      // Please note that getWindowCount() will return 2 if `dev tools` are opened.
-      // assert.equal(count, 2)
-    });
+  it('start button', async () => {
+    const startBtn = page.$('.start-btn');
+    assert.equal(startBtn.innerText, '开始');
   });
 });

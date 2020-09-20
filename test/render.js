@@ -1,4 +1,4 @@
-const assert = require('assert');
-describe('render process ', () => {
-  it('set target', () => {});
-});
+// const assert = require('assert');
+// describe('render process ', () => {
+//   it('set target', () => {});
+// });
