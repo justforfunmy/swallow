@@ -72,10 +72,11 @@ class Form {
 
   getValues() {
     const forms = root.querySelectorAll('form');
-    const formValues = {};
-    forms.forEach((item, idx) => {
+    const formValues = [];
+    forms.forEach((item) => {
       const name = item.querySelector('input[name="name"]').value;
       const link = item.querySelector('input[name="link"]').value;
+      const target = item.querySelector('input[name="target"]').value;
       const tbody = item.querySelector('tbody');
       const trs = tbody.querySelectorAll('tr');
       const properties = {};
@@ -83,14 +84,14 @@ class Form {
         const tds = tr.querySelectorAll('td');
         const name = tds[0].innerText;
         const selector = tds[1].innerText;
-        const source = tds[1].innerText;
+        const source = tds[2].innerText;
         properties[name] = {
           name,
           selector,
           source
         };
       });
-      formValues[idx] = { name, link, properties };
+      formValues.push({ name, link, target, properties });
     });
     return formValues;
   }

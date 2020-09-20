@@ -3,7 +3,7 @@ const crawl = require('./crawl');
 
 ipcMain.on('start-crawl', (event, formData, destination) => {
   console.log(formData, destination);
-  // crawl(event, args);
+  crawl(event, formData, destination);
 });
 
 ipcMain.on('choose-output', (event, args) => {
