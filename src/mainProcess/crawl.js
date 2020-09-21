@@ -1,10 +1,11 @@
 const puppeteer = require('puppeteer');
+const createModel = require('../mongodb/createModel');
 
-const grabData = (page, options) => {
+const grabData = (page, options, model) => {
   console.log('grabing data');
 
-  const result = page.evaluate(
-    (list, options) => {
+  page.evaluate(
+    (model, options) => {
       const { target, properties } = options;
       const elements = document.querySelectorAll(target);
       elements.forEach((el) => {
@@ -15,15 +16,12 @@ const grabData = (page, options) => {
           const temp = el.querySelector(selector);
           result[name] = temp[source];
         });
-        list.push(result);
+        model.create(result);
       });
-      return list;
     },
-    [],
+    model,
     options
   );
-
-  return result;
 };
 
 module.exports = async function (event, steps, destination) {
@@ -45,8 +43,9 @@ module.exports = async function (event, steps, destination) {
     const { name, link, target, properties } = step;
     try {
       await page.goto(link);
-      const res = await grabData(page, { target, properties });
-      event.reply('crawl-response', res);
+      const model = createModel(name, properties);
+      await grabData(page, { target, properties }, model);
+      event.reply('crawl-response');
       await browser.close();
     } catch (error) {
       console.error(error);
