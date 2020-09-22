@@ -4,7 +4,6 @@ const trTemplate = document.querySelector('#tr-template');
 const nextLinkBtn = document.querySelector('#next-link');
 const deleteLinkBtn = document.querySelector('#delete-link');
 const formModal = document.querySelector('#form-modal');
-const startBtn = document.querySelector('#start-btn');
 const addFieldBtn = document.querySelector('#add-field');
 const fieldInput = document.querySelector('#field');
 const selectorInput = document.querySelector('#selector');
@@ -38,10 +37,17 @@ class Form {
   add() {
     const clone = document.importNode(formTemplate.content, true);
     const collectBtn = clone.querySelector('.collect-btn');
+    const startBtn = clone.querySelector('.start-btn');
     collectBtn.addEventListener('click', () => {
       formModal.style.display = 'block';
       const target = collectBtn.parentNode.parentNode.parentNode;
       this.target = target;
+    });
+    startBtn.addEventListener('click', (e) => {
+      const form = startBtn.parentNode.parentNode.parentNode;
+      this.target = form;
+      const values = this.getValues();
+      ipcRenderer.send('start-crawl', values);
     });
     root.appendChild(clone);
   }
@@ -71,38 +77,28 @@ class Form {
   }
 
   getValues() {
-    const forms = root.querySelectorAll('form');
-    const formValues = [];
-    forms.forEach((item) => {
-      const name = item.querySelector('input[name="name"]').value;
-      const link = item.querySelector('input[name="link"]').value;
-      const target = item.querySelector('input[name="target"]').value;
-      const tbody = item.querySelector('tbody');
-      const trs = tbody.querySelectorAll('tr');
-      const properties = {};
-      trs.forEach((tr) => {
-        const tds = tr.querySelectorAll('td');
-        const name = tds[0].innerText;
-        const selector = tds[1].innerText;
-        const source = tds[2].innerText;
-        properties[name] = {
-          name,
-          selector,
-          source
-        };
-      });
-      formValues.push({ name, link, target, properties });
+    const item = this.target;
+    const name = item.querySelector('input[name="name"]').value;
+    const link = item.querySelector('input[name="link"]').value;
+    const target = item.querySelector('input[name="target"]').value;
+    const tbody = item.querySelector('tbody');
+    const trs = tbody.querySelectorAll('tr');
+    const properties = {};
+    trs.forEach((tr) => {
+      const tds = tr.querySelectorAll('td');
+      const name = tds[0].innerText;
+      const selector = tds[1].innerText;
+      const source = tds[2].innerText;
+      properties[name] = {
+        name,
+        selector,
+        source
+      };
     });
-    return formValues;
+    return { name, link, target, properties };
   }
 
   initHandler() {
-    startBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      const values = this.getValues();
-      const destination = document.querySelector('#output').innerText;
-      ipcRenderer.send('start-crawl', values, destination);
-    });
 
     nextLinkBtn.addEventListener('click', (event) => {
       this.add();

@@ -1,9 +1,9 @@
 const { ipcMain, dialog } = require('electron');
 const crawl = require('./crawl');
 
-ipcMain.on('start-crawl', (event, formData, destination) => {
-  console.log(formData, destination);
-  crawl(event, formData, destination);
+ipcMain.on('start-crawl', (event, formData) => {
+  console.log(formData);
+  crawl(event, formData);
 });
 
 ipcMain.on('choose-output', (event, args) => {

@@ -1,11 +1,11 @@
 const puppeteer = require('puppeteer');
 const createModel = require('../mongodb/createModel');
 
-const grabData = (page, options, model) => {
+const grabData = (page, options) => {
   console.log('grabing data');
 
-  page.evaluate(
-    (model, options) => {
+  const result = page.evaluate(
+    (list, options) => {
       const { target, properties } = options;
       const elements = document.querySelectorAll(target);
       elements.forEach((el) => {
@@ -14,42 +14,63 @@ const grabData = (page, options, model) => {
           const item = properties[key];
           const { name, selector, source } = item;
           const temp = el.querySelector(selector);
-          result[name] = temp[source];
+          if (temp[source]) {
+            result[name] = temp[source];
+          } else {
+            result[name] = temp.getAttribute(source);
+          }
         });
-        model.create(result);
+        list.push(result);
       });
+      return list;
     },
-    model,
+    [],
     options
   );
+
+  return result;
 };
 
-module.exports = async function (event, steps, destination) {
+const insertData = async (data, model) => {
+  data.forEach(async (item) => {
+    await model.create(item);
+  });
+  console.log('grabing data finished');
+};
+
+const crawlUrl = async (page, { link, name, target, properties }) => {
+  await page.goto(link);
+  const model = createModel(name, properties);
+  const res = await grabData(page, { target, properties });
+  await insertData(res, model);
+};
+
+module.exports = async function (event, formValues) {
   const browser = await puppeteer.launch({ headless: false, ignoreHTTPSErrors: true });
-  console.log('server start');
+  console.log('browser start');
 
-  const page = await browser.newPage();
+  const { name, link, target, properties } = formValues;
+  const linkArray = link.split(';');
+  const promises = [];
+  for (let i = 0, len = linkArray.length; i < len; i++) {
+    promises.push(
+      browser.newPage().then(async (page) => {
+        page.setDefaultNavigationTimeout(0);
+        await page.setViewport({ width: 1280, height: 800 });
+        await page.goto(linkArray[i]);
+        await crawlUrl(page, { link, name, target, properties });
+      })
+    );
+  }
 
-  page.on('console', (msg) => {
-    if (typeof msg === 'object') {
-      console.dir(msg);
-    } else {
-      console.log(msg);
-    }
-  });
-  await page.setDefaultNavigationTimeout(0);
+  await Promise.all(promises);
+  await browser.close();
 
-  steps.forEach(async (step, idx) => {
-    const { name, link, target, properties } = step;
-    try {
-      await page.goto(link);
-      const model = createModel(name, properties);
-      await grabData(page, { target, properties }, model);
-      event.reply('crawl-response');
-      await browser.close();
-    } catch (error) {
-      console.error(error);
-      await browser.close();
-    }
-  });
+  // page.on('console', (msg) => {
+  //   if (typeof msg === 'object') {
+  //     console.dir(msg);
+  //   } else {
+  //     console.log(msg);
+  //   }
+  // });
 };
