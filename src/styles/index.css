@@ -63,10 +63,60 @@
   left: 50%;
   transform: translate(-50%, 0);
   background-color: #fff;
-  box-shadow: 0px 0px 3px rgba(18, 18, 18, 0.7);
+  box-shadow: 0px 0px 3px rgba(18, 18, 18, 0.1);
   padding: 10px 80px;
   z-index: 111111;
   border-radius: 5px;
   opacity: 0;
   transition: opacity ease 0.5s;
+}
+
+.history-container {
+  width: 300px;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  right: 0;
+  z-index: 111111;
+  background-color: #fff;
+  transform: translate(100%);
+  transition: transform ease 0.5s;
+  box-shadow: -5px -5px 10px -4px rgba(18, 18, 18, 0.1), -5px 5px 10px -4px rgba(18, 18, 18, 0.1);
+}
+
+.history-container::before {
+  content: '历史记录';
+  display: block;
+  position: absolute;
+  top: 50%;
+  transform: translate(-100%, -50%);
+  width: 40px;
+  line-height: 24px;
+  font-size: 20px;
+  padding: 20px 10px;
+  border-radius: 5px 0 0 5px;
+  background-color: #4f9fcf;
+  color: #fff;
+}
+
+.history-container:hover {
+  transform: translate(0);
+}
+
+.record-item {
+  width: 100%;
+  padding: 10px;
+  font-size: 20px;
+  border-bottom: 1px solid rgba(18, 18, 18, 0.1);
+  cursor: pointer;
+}
+
+.record-link {
+  font-size: 16px;
+  color: gray;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  display: -webkit-box;
+  -webkit-line-clamp: 3;
+  -webkit-box-orient: vertical;
 }

@@ -1,5 +1,6 @@
 const puppeteer = require('puppeteer');
 const createModel = require('../mongodb/createModel');
+const { createRecord } = require('../mongodb/history');
 
 const grabData = async (page, options) => {
   console.log('grabing data');
@@ -10,8 +11,7 @@ const grabData = async (page, options) => {
       const elements = document.querySelectorAll(target);
       elements.forEach((el) => {
         const result = {};
-        Object.keys(properties).forEach((key) => {
-          const item = properties[key];
+        properties.forEach((item) => {
           const { name, selector, source } = item;
           const temp = el.querySelector(selector);
           if (temp[source]) {
@@ -61,6 +61,7 @@ module.exports = async function (event, formValues) {
   if (!model) {
     return event.reply('error', '数据库集合名已存在');
   }
+  await createRecord(formValues);
   const browser = await puppeteer.launch({
     headless: false,
     ignoreHTTPSErrors: true
@@ -83,7 +84,7 @@ module.exports = async function (event, formValues) {
     await item();
   }
   await browser.close();
-
+  event.reply('crawl-response', '网页爬取完成！');
   // page.on('console', (msg) => {
   //   if (typeof msg === 'object') {
   //     console.dir(msg);

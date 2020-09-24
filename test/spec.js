@@ -97,4 +97,11 @@ describe('Application launch', function () {
     const display = await modal.getCSSProperty('display');
     return assert.strictEqual(display.value, 'block');
   });
+
+  it('should toast opacity is 0 when the application start', async () => {
+    await app.client.waitUntilWindowLoaded();
+    const toast = await app.client.$('.toast');
+    const opacity = await toast.getCSSProperty('opacity');
+    return assert.strictEqual(opacity.value, '0');
+  });
 });

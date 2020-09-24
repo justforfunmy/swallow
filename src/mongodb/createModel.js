@@ -1,5 +1,4 @@
 const mongoose = require('mongoose');
-const { dialog } = require('electron');
 
 const getCollectionNames = async () => {
   const cols = await mongoose.connection.db.collections();
@@ -28,7 +27,8 @@ module.exports = async (name, params) => {
     return null;
   }
   const result = {};
-  Object.keys(params).forEach((key) => {
+  params.forEach((item) => {
+    const key = item.name;
     result[key] = { type: String, required: false };
   });
   const schema = new mongoose.Schema(result);

@@ -79,17 +79,17 @@ class Form {
     const trigger = item.querySelector('input[name="trigger"]').value;
     const tbody = item.querySelector('tbody');
     const trs = tbody.querySelectorAll('tr');
-    const properties = {};
+    const properties = [];
     trs.forEach((tr) => {
       const tds = tr.querySelectorAll('td');
       const name = tds[0].innerText;
       const selector = tds[1].innerText;
       const source = tds[2].innerText;
-      properties[name] = {
+      properties.push({
         name,
         selector,
         source
-      };
+      });
     });
     return { name, link, trigger, target, properties };
   }
