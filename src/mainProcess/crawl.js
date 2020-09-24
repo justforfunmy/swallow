@@ -38,20 +38,28 @@ const insertData = async (data, model) => {
   console.log('grabing data finished');
 };
 
-const crawlUrl = async (page, model, { url, target, properties }) => {
-  await page.goto(url);
-  await page.waitFor(1000);
-  const res = await grabData(page, { target, properties });
-  await insertData(res, model);
-  await page.waitFor(2500);
-  await page.close();
+const crawlUrl = async (page, model, event, { url, trigger, target, properties }) => {
+  try {
+    await page.goto(url);
+    if (trigger !== '') {
+      await page.click(trigger);
+    }
+    await page.waitFor(1000);
+    const res = await grabData(page, { target, properties });
+    await insertData(res, model);
+    await page.waitFor(2500);
+    await page.close();
+  } catch (error) {
+    console.error(error);
+    event.reply('error', '网页爬取失败!');
+  }
 };
 
 module.exports = async function (event, formValues) {
-  const { name, link, target, properties } = formValues;
+  const { name, link, trigger, target, properties } = formValues;
   const model = await createModel(name, properties);
   if (!model) {
-    return;
+    return event.reply('error', '数据库集合名已存在');
   }
   const browser = await puppeteer.launch({
     headless: false,
@@ -67,7 +75,7 @@ module.exports = async function (event, formValues) {
       const page = await browser.newPage();
       page.setDefaultNavigationTimeout(0);
       await page.setViewport({ width: 1280, height: 800 });
-      await crawlUrl(page, model, { url: linkArray[i], target, properties });
+      await crawlUrl(page, model, event, { url: linkArray[i], trigger, target, properties });
     });
   }
 

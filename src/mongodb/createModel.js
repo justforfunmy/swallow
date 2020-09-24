@@ -25,7 +25,6 @@ const isCollectionExit = async (name) => {
 
 module.exports = async (name, params) => {
   if (await isCollectionExit(name)) {
-    await dialog.showMessageBox({ title: 'Error', message: '数据库集合名已存在' });
     return null;
   }
   const result = {};

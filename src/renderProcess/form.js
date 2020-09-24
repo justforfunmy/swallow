@@ -10,11 +10,6 @@ const selectorInput = document.querySelector('#selector');
 const sourceInput = document.querySelector('#source');
 
 const { ipcRenderer } = require('electron');
-
-ipcRenderer.on('crawl-response', (e, res) => {
-  console.log(res);
-});
-
 class Form {
   constructor() {
     this.init();
@@ -81,6 +76,7 @@ class Form {
     const name = item.querySelector('input[name="name"]').value;
     const link = item.querySelector('input[name="link"]').value;
     const target = item.querySelector('input[name="target"]').value;
+    const trigger = item.querySelector('input[name="trigger"]').value;
     const tbody = item.querySelector('tbody');
     const trs = tbody.querySelectorAll('tr');
     const properties = {};
@@ -95,11 +91,10 @@ class Form {
         source
       };
     });
-    return { name, link, target, properties };
+    return { name, link, trigger, target, properties };
   }
 
   initHandler() {
-
     nextLinkBtn.addEventListener('click', (event) => {
       this.add();
     });

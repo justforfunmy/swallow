@@ -55,10 +55,10 @@ describe('Application launch', function () {
     return assert.strictEqual(devToolsOpen, false);
   });
 
-  it('has a button with the text "添加路径"', async () => {
+  it('has a button with the text "新建"', async () => {
     await app.client.waitUntilWindowLoaded();
     const buttonText = await (await app.client.$('#next-link')).getText();
-    return assert.strictEqual(buttonText, '添加路径');
+    return assert.strictEqual(buttonText, '新建');
   });
 
   it('should have only one link input when the application start', async () => {
@@ -67,7 +67,7 @@ describe('Application launch', function () {
     return assert.strictEqual(linkInput.length, 1);
   });
 
-  it('should have at least two link input when the "添加路径" button pressed', async () => {
+  it('should have at least two link input when the "新建" button pressed', async () => {
     await app.client.waitUntilWindowLoaded();
     await (await app.client.$('#next-link')).click();
     const linkInput = await app.client.$$('input[name="link"]');
