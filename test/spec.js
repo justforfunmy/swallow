@@ -3,6 +3,8 @@ const assert = require('assert');
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
 
+const { Form, setTargetForm, getTargetForm } = require('../src/renderProcess/form');
+
 describe('Application launch', function () {
   this.timeout(10000);
 
@@ -104,4 +106,27 @@ describe('Application launch', function () {
     const opacity = await toast.getCSSProperty('opacity');
     return assert.strictEqual(opacity.value, '0');
   });
+});
+
+describe('form operation', () => {
+  this.timeout(10000);
+
+  const app = new Application({
+    path: electronPath,
+    args: [path.join(__dirname, '..')]
+  });
+
+  before(function () {
+    return app.start();
+  });
+
+  after(function () {
+    if (app && app.isRunning()) {
+      return app.stop();
+    }
+  });
+
+  it('should add a form when new Form() excued',async()=>{
+		
+	});
 });
