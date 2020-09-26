@@ -23,6 +23,7 @@ class Form {
     const clone = document.importNode(formTemplate.content, true);
     const collectBtn = clone.querySelector('.collect-btn');
     const startBtn = clone.querySelector('.start-btn');
+    const resetBtn = clone.querySelector('.reset-btn');
     collectBtn.addEventListener('click', () => {
       formModal.style.display = 'block';
       setTargetForm(this);
@@ -31,6 +32,9 @@ class Form {
       const values = this.getValues();
       ipcRenderer.send('start-crawl', values);
     });
+    resetBtn.addEventListener('click', () => {
+      this.reset();
+    });
 
     root.appendChild(clone);
 
@@ -38,19 +42,37 @@ class Form {
     if (options) {
       this.initOptions(options);
     }
+    setTargetForm(this);
   }
 
   initOptions(options) {
-    const { name, link, trigger, target, properties } = options;
+    const { name, url, trigger, target, properties } = options;
     const dom = this.dom;
     dom.querySelector('input[name="name"]').value = name;
-    dom.querySelector('input[name="link"]').value = link;
+    dom.querySelector('textarea[name="url"]').value = url;
     dom.querySelector('input[name="target"]').value = target;
     dom.querySelector('input[name="trigger"]').value = trigger;
     properties.forEach((item) => {
       const { name, selector, source } = item;
       this.addProperty(name, selector, source);
     });
+  }
+
+  reset() {
+    const dom = this.dom;
+    dom.querySelector('input[name="name"]').value = '';
+    dom.querySelector('textarea[name="url"]').value = '';
+    dom.querySelector('input[name="target"]').value = '';
+    dom.querySelector('input[name="trigger"]').value = '';
+    const tbody = dom.querySelector('tbody');
+    while (tbody.lastChild) {
+      tbody.removeChild(tbody.lastChild);
+    }
+  }
+
+  setUrl(url) {
+    const dom = this.dom;
+    dom.querySelector('textarea[name="url"]').value = url;
   }
 
   addProperty(field, selector, source) {
@@ -72,7 +94,7 @@ class Form {
   getValues() {
     const dom = this.dom;
     const name = dom.querySelector('input[name="name"]').value;
-    const link = dom.querySelector('input[name="link"]').value;
+    const url = dom.querySelector('textarea[name="url"]').value;
     const target = dom.querySelector('input[name="target"]').value;
     const trigger = dom.querySelector('input[name="trigger"]').value;
     const tbody = dom.querySelector('tbody');
@@ -89,7 +111,7 @@ class Form {
         source
       });
     });
-    return { name, link, trigger, target, properties };
+    return { name, url, trigger, target, properties };
   }
 }
 

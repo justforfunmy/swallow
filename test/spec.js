@@ -3,8 +3,6 @@ const assert = require('assert');
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
 
-const { Form, setTargetForm, getTargetForm } = require('../src/renderProcess/form');
-
 describe('Application launch', function () {
   this.timeout(10000);
 
@@ -59,29 +57,29 @@ describe('Application launch', function () {
 
   it('has a button with the text "新建"', async () => {
     await app.client.waitUntilWindowLoaded();
-    const buttonText = await (await app.client.$('#next-link')).getText();
+    const buttonText = await (await app.client.$('#next-url')).getText();
     return assert.strictEqual(buttonText, '新建');
   });
 
-  it('should have only one link input when the application start', async () => {
+  it('should have only one url input when the application start', async () => {
     await app.client.waitUntilWindowLoaded();
-    const linkInput = await app.client.$$('input[name="link"]');
-    return assert.strictEqual(linkInput.length, 1);
+    const urlInput = await app.client.$$('textarea[name="url"]');
+    return assert.strictEqual(urlInput.length, 1);
   });
 
-  it('should have at least two link input when the "新建" button pressed', async () => {
+  it('should have at least two url input when the "新建" button pressed', async () => {
     await app.client.waitUntilWindowLoaded();
-    await (await app.client.$('#next-link')).click();
-    const linkInput = await app.client.$$('input[name="link"]');
-    return assert.strictEqual(linkInput.length, 2);
+    await (await app.client.$('#next-url')).click();
+    const urlInput = await app.client.$$('textarea[name="url"]');
+    return assert.strictEqual(urlInput.length, 2);
   });
 
-  it('should succefully remove a link input', async () => {
+  it('should succefully remove a url input', async () => {
     await app.client.waitUntilWindowLoaded();
-    await (await app.client.$('#next-link')).click();
-    await (await app.client.$('#delete-link')).click();
-    const linkInput = await app.client.$$('input[name="link"]');
-    return assert.strictEqual(linkInput.length, 1);
+    await (await app.client.$('#next-url')).click();
+    await (await app.client.$('#delete-url')).click();
+    const urlInput = await app.client.$$('textarea[name="url"]');
+    return assert.strictEqual(urlInput.length, 1);
   });
 
   it('should modal display none when the application start', async () => {
@@ -104,29 +102,6 @@ describe('Application launch', function () {
     await app.client.waitUntilWindowLoaded();
     const toast = await app.client.$('.toast');
     const opacity = await toast.getCSSProperty('opacity');
-    return assert.strictEqual(opacity.value, '0');
+    return assert.strictEqual(opacity.value, 0);
   });
-});
-
-describe('form operation', () => {
-  this.timeout(10000);
-
-  const app = new Application({
-    path: electronPath,
-    args: [path.join(__dirname, '..')]
-  });
-
-  before(function () {
-    return app.start();
-  });
-
-  after(function () {
-    if (app && app.isRunning()) {
-      return app.stop();
-    }
-  });
-
-  it('should add a form when new Form() excued',async()=>{
-		
-	});
 });

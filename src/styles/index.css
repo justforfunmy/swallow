@@ -53,6 +53,16 @@ html {
   z-index: 111111;
   box-shadow: 0 1px 3px -2px rgba(18, 18, 18, 0.1);
   text-align: right;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.main-operation button {
+  margin: 0 5px;
+}
+
+.col-select {
+  width: auto;
 }
 
 .output-path {
@@ -114,7 +124,7 @@ html {
   cursor: pointer;
 }
 
-.record-link {
+.record-url {
   font-size: 16px;
   color: gray;
   overflow: hidden;

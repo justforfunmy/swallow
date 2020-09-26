@@ -4,8 +4,9 @@ const { createHistoryDom } = require('./history');
 const { Form, getTargetForm } = require('./form');
 
 const historyContainer = document.querySelector('.history-container');
-const nextLinkBtn = document.querySelector('#next-link');
-const deleteLinkBtn = document.querySelector('#delete-link');
+const nextUrlBtn = document.querySelector('#next-url');
+const deleteUrlBtn = document.querySelector('#delete-url');
+const importUrlBtn = document.querySelector('#import-url');
 const root = document.querySelector('#root');
 
 const addFieldBtn = document.querySelector('#add-field');
@@ -28,21 +29,26 @@ ipcRenderer.on('history-response', (event, res) => {
   createHistoryDom(list);
 });
 
+ipcRenderer.on('json-response', (event, res) => {
+  const form = new Form();
+  form.setUrl(res);
+});
+
 historyContainer.addEventListener('mouseenter', () => {
   ipcRenderer.send('get-history');
 });
 
-nextLinkBtn.addEventListener('click', (event) => {
+nextUrlBtn.addEventListener('click', (event) => {
   new Form();
 });
 
-deleteLinkBtn.addEventListener('click', (event) => {
-  const formList = document.querySelectorAll('.form-instance');
-  if (formList.length < 2) {
-    return;
-  }
+deleteUrlBtn.addEventListener('click', (event) => {
   const lastForm = root.lastElementChild;
   root.removeChild(lastForm);
+});
+
+importUrlBtn.addEventListener('click', () => {
+  ipcRenderer.send('pick-json');
 });
 
 function resetModal() {

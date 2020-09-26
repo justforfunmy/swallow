@@ -56,7 +56,7 @@ const crawlUrl = async (page, model, event, { url, trigger, target, properties }
 };
 
 module.exports = async function (event, formValues) {
-  const { name, link, trigger, target, properties } = formValues;
+  const { name, url, trigger, target, properties } = formValues;
   const model = await createModel(name, properties);
   if (!model) {
     return event.reply('error', '数据库集合名已存在');
@@ -68,15 +68,15 @@ module.exports = async function (event, formValues) {
   });
   console.log('browser start');
 
-  const linkArray = link.split(';');
+  const urlArray = url.split(';');
 
   const promises = [];
-  for (let i = 0, len = linkArray.length; i < len; i++) {
+  for (let i = 0, len = urlArray.length; i < len; i++) {
     promises.push(async () => {
       const page = await browser.newPage();
       page.setDefaultNavigationTimeout(0);
       await page.setViewport({ width: 1280, height: 800 });
-      await crawlUrl(page, model, event, { url: linkArray[i], trigger, target, properties });
+      await crawlUrl(page, model, event, { url: urlArray[i], trigger, target, properties });
     });
   }
 

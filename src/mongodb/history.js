@@ -2,7 +2,7 @@ const mongoose = require('mongoose');
 
 const historySchema = mongoose.Schema({
   name: String,
-  link: String,
+  url: String,
   trigger: String,
   target: String,
   properties: [

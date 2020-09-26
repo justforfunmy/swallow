@@ -8,10 +8,10 @@ exports.createHistoryDom = (list) => {
   }
 
   list.forEach((item) => {
-    const { name, link } = item;
+    const { name, url } = item;
     const record = document.importNode(recordTemplate.content, true);
     record.querySelector('.record-title').innerHTML = name;
-    record.querySelector('.record-link').innerHTML = link;
+    record.querySelector('.record-url').innerHTML = url;
     record.querySelector('.record-item').addEventListener('click', () => {
       new Form(item);
     });
