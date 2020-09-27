@@ -2,10 +2,10 @@ const puppeteer = require('puppeteer');
 const createModel = require('../mongodb/createModel');
 const { createRecord } = require('../mongodb/history');
 
-const grabData = async (page, options) => {
+const grabData = async (page, params) => {
   console.log('grabing data');
 
-  const result = await page.evaluate(
+  const res = await page.evaluate(
     (list, options) => {
       const { target, properties } = options;
       const elements = document.querySelectorAll(target);
@@ -25,10 +25,10 @@ const grabData = async (page, options) => {
       return list;
     },
     [],
-    options
+    params
   );
 
-  return result;
+  return res;
 };
 
 const insertData = async (data, model) => {
@@ -55,7 +55,7 @@ const crawlUrl = async (page, model, event, { url, trigger, target, properties }
   }
 };
 
-module.exports = async function (event, formValues) {
+module.exports = async function crawl(event, formValues) {
   const { name, url, trigger, target, properties } = formValues;
   const model = await createModel(name, properties);
   if (!model) {
@@ -71,20 +71,27 @@ module.exports = async function (event, formValues) {
   const urlArray = url.split(';');
 
   const promises = [];
-  for (let i = 0, len = urlArray.length; i < len; i++) {
+  for (let i = 0, len = urlArray.length; i < len; i += 1) {
     promises.push(async () => {
       const page = await browser.newPage();
       page.setDefaultNavigationTimeout(0);
       await page.setViewport({ width: 1280, height: 800 });
-      await crawlUrl(page, model, event, { url: urlArray[i], trigger, target, properties });
+      await crawlUrl(page, model, event, {
+        url: urlArray[i],
+        trigger,
+        target,
+        properties
+      });
     });
   }
 
+  // eslint-disable-next-line no-restricted-syntax
   for (const item of promises) {
+    // eslint-disable-next-line no-await-in-loop
     await item();
   }
   await browser.close();
-  event.reply('crawl-response', '网页爬取完成！');
+  return event.reply('crawl-response', '网页爬取完成！');
   // page.on('console', (msg) => {
   //   if (typeof msg === 'object') {
   //     console.dir(msg);

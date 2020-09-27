@@ -13,6 +13,7 @@ exports.createHistoryDom = (list) => {
     record.querySelector('.record-title').innerHTML = name;
     record.querySelector('.record-url').innerHTML = url;
     record.querySelector('.record-item').addEventListener('click', () => {
+      // eslint-disable-next-line no-new
       new Form(item);
     });
     historyContainer.appendChild(record);

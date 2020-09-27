@@ -2,15 +2,16 @@ const mongoose = require('mongoose');
 
 const getCollectionNames = async () => {
   const cols = await mongoose.connection.db.collections();
-  let colStrArr = [];
-  for (let c of cols) {
+  const colStrArr = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const c of cols) {
     colStrArr.push(c.s.namespace.collection);
   }
   return colStrArr;
 };
 
-const isCollectionExit = async (name) => {
-  name = name.toLowerCase();
+const isCollectionExit = async (collection) => {
+  const name = collection.toLowerCase();
   const cols = await getCollectionNames();
   if (
     cols.indexOf(name) !== -1 ||

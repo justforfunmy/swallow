@@ -38,11 +38,12 @@ historyContainer.addEventListener('mouseenter', () => {
   ipcRenderer.send('get-history');
 });
 
-nextUrlBtn.addEventListener('click', (event) => {
+nextUrlBtn.addEventListener('click', () => {
+  // eslint-disable-next-line no-new
   new Form();
 });
 
-deleteUrlBtn.addEventListener('click', (event) => {
+deleteUrlBtn.addEventListener('click', () => {
   const lastForm = root.lastElementChild;
   root.removeChild(lastForm);
 });

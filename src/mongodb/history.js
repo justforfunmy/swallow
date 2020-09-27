@@ -14,10 +14,12 @@ const historySchema = mongoose.Schema({
   ]
 });
 
+// eslint-disable-next-line new-cap
 const historyModel = new mongoose.model('history', historySchema);
 
 exports.getHistory = async () => {
-  return await historyModel.find({});
+  const history = await historyModel.find({});
+  return history;
 };
 
 exports.createRecord = async (record) => {
