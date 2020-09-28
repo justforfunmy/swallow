@@ -46,12 +46,13 @@ class Form {
   }
 
   initOptions(options) {
-    const { name, url, trigger, target, properties } = options;
+    const { name, url, trigger, target, pagination, properties } = options;
     const { dom } = this;
     dom.querySelector('input[name="name"]').value = name;
     dom.querySelector('textarea[name="url"]').value = url;
     dom.querySelector('input[name="target"]').value = target;
     dom.querySelector('input[name="trigger"]').value = trigger;
+    dom.querySelector('input[name="pagination"]').value = pagination;
     properties.forEach((item) => {
       // eslint-disable-next-line no-shadow
       const { name, selector, source } = item;
@@ -65,6 +66,7 @@ class Form {
     dom.querySelector('textarea[name="url"]').value = '';
     dom.querySelector('input[name="target"]').value = '';
     dom.querySelector('input[name="trigger"]').value = '';
+    dom.querySelector('input[name="pagination"]').value = '';
     const tbody = dom.querySelector('tbody');
     while (tbody.lastChild) {
       tbody.removeChild(tbody.lastChild);
@@ -98,6 +100,7 @@ class Form {
     const url = dom.querySelector('textarea[name="url"]').value;
     const target = dom.querySelector('input[name="target"]').value;
     const trigger = dom.querySelector('input[name="trigger"]').value;
+    const pagination = dom.querySelector('input[name="pagination"]').value;
     const tbody = dom.querySelector('tbody');
     const trs = tbody.querySelectorAll('tr');
     const properties = [];
@@ -113,7 +116,7 @@ class Form {
         source
       });
     });
-    return { name, url, trigger, target, properties };
+    return { name, url, trigger, target, pagination, properties };
   }
 }
 

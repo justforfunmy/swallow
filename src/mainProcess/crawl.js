@@ -14,10 +14,8 @@ const grabData = async (page, params) => {
         properties.forEach((item) => {
           const { name, selector, source } = item;
           const temp = el.querySelector(selector);
-          if (temp[source]) {
-            result[name] = temp[source];
-          } else {
-            result[name] = temp.getAttribute(source);
+          if (temp) {
+            result[name] = temp[source] ? temp[source] : temp.getAttribute(source);
           }
         });
         list.push(result);
@@ -38,15 +36,28 @@ const insertData = async (data, model) => {
   console.log('grabing data finished');
 };
 
-const crawlUrl = async (page, model, event, { url, trigger, target, properties }) => {
+const crawlUrl = async (page, model, event, { url, trigger, target, pagination, properties }) => {
   try {
     await page.goto(url);
     if (trigger !== '') {
       await page.click(trigger);
     }
     await page.waitFor(1000);
-    const res = await grabData(page, { target, properties });
-    await insertData(res, model);
+    if (pagination && pagination !== '') {
+      const pageitems = await page.$$(pagination);
+      pageitems.forEach(async (item, idx) => {
+        const clickElement = page.$(`${pagination}:nth-child(${idx + 1})`);
+        if (clickElement) {
+          await page.click(`${pagination}:nth-child(${idx + 1})`);
+          const res = await grabData(page, { target, properties });
+          await insertData(res, model);
+        }
+      });
+    } else {
+      const res = await grabData(page, { target, properties });
+      await insertData(res, model);
+    }
+
     await page.waitFor(2500);
     await page.close();
   } catch (error) {
@@ -56,7 +67,7 @@ const crawlUrl = async (page, model, event, { url, trigger, target, properties }
 };
 
 module.exports = async function crawl(event, formValues) {
-  const { name, url, trigger, target, properties } = formValues;
+  const { name, url, trigger, target, pagination, properties } = formValues;
   const model = await createModel(name, properties);
   if (!model) {
     return event.reply('error', '数据库集合名已存在');
@@ -80,6 +91,7 @@ module.exports = async function crawl(event, formValues) {
         url: urlArray[i],
         trigger,
         target,
+        pagination,
         properties
       });
     });

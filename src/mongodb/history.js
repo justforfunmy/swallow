@@ -5,13 +5,18 @@ const historySchema = mongoose.Schema({
   url: String,
   trigger: String,
   target: String,
+  pagination: String,
   properties: [
     {
       name: String,
       selector: String,
       source: String
     }
-  ]
+  ],
+  time: {
+    type: Date,
+    default: Date.now
+  }
 });
 
 // eslint-disable-next-line new-cap
