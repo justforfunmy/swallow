@@ -18,8 +18,23 @@ const formModal = document.querySelector('#form-modal');
 const switchComp = document.querySelector('#switch-comp');
 const jsonConfigTextarea = document.querySelector('#json-config-textarea');
 const jsonImportUrl = document.querySelector('#json-import-url');
+const jsonReset = document.querySelector('#json-reset');
+const jsonAddTrigger = document.querySelector('')
 
-jsonConfigTextarea.value = JSON.stringify({ url: '' }, null, 2);
+const initialConfig = {
+  name: '',
+  url: '',
+  trigger: '',
+  properties: [
+    {
+      name: '',
+      selector: '',
+      source: ''
+    }
+  ]
+};
+
+jsonConfigTextarea.value = JSON.stringify(initialConfig, null, 2);
 
 const updateConfig = (params) => {
   const { key, value } = params;
@@ -63,6 +78,10 @@ switchComp.addEventListener('change', () => {
   const { value } = switchComp;
   jsonRoot.style.display = value === 'json' ? 'block' : 'none';
   root.style.display = value === 'form' ? 'block' : 'none';
+});
+
+jsonReset.addEventListener('click', () => {
+  jsonConfigTextarea.value = JSON.stringify(initialConfig, null, 2);
 });
 
 historyContainer.addEventListener('mouseenter', () => {
