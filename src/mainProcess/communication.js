@@ -20,7 +20,7 @@ ipcMain.on('get-history', async (event) => {
   event.reply('history-response', JSON.stringify(result));
 });
 
-ipcMain.on('pick-json', (event) => {
+ipcMain.on('pick-json', (event, args) => {
   const src = dialog.showOpenDialogSync({
     properties: ['openFile'],
     filters: [{ name: 'json', extensions: ['json'] }]
@@ -31,7 +31,8 @@ ipcMain.on('pick-json', (event) => {
     if (arr && Array.isArray(arr) && arr[0]) {
       const result = arr.reduce((prev, cur) => `${prev};${cur.url}`, '');
       if (result) {
-        event.reply('json-response', result);
+        const { mode } = args;
+        event.reply('json-response', { result, mode });
       }
     }
   }

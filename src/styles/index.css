@@ -2,6 +2,23 @@ html {
   overflow-y: scroll;
 }
 
+.switch-comp {
+  padding: 20px 30px;
+  position: fixed;
+  top: 0;
+  right: 0;
+  background-color: #fff;
+  z-index: 999999;
+}
+
+#json-root {
+  display: block;
+}
+
+#root {
+  display: none;
+}
+
 .root {
   padding-top: 80px;
 }
@@ -54,7 +71,7 @@ html {
   box-shadow: 0 1px 3px -2px rgba(18, 18, 18, 0.1);
   text-align: right;
   display: flex;
-  justify-content: flex-end;
+  justify-content: flex-start;
 }
 
 .main-operation button {
@@ -132,4 +149,8 @@ html {
   display: -webkit-box;
   -webkit-line-clamp: 3;
   -webkit-box-orient: vertical;
+}
+
+.config-textarea {
+  padding: 30px;
 }

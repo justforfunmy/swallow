@@ -14,6 +14,13 @@
     <title>Swallow</title>
   </head>
   <body>
+    <div class="switch-comp">
+      <select class="form-control" id="switch-comp">
+        <option value="json">json模式</option>
+        <option value="form">表单模式</option>
+      </select>
+    </div>
+    <!-- form模式 -->
     <div id="root" class="root">
       <template id="form-template">
         <form class="form-horizontal custom-form form-instance" id="form">
@@ -114,11 +121,28 @@
         </tr>
       </template>
       <div class="main-operation">
-        <button type="button" class="btn btn-primary" id="import-url">从JSON导入URL</button>
         <button type="button" class="btn btn-info" id="next-url">新建</button>
         <button type="button" class="btn btn-danger" id="delete-url">删除</button>
+        <button type="button" class="btn btn-primary" id="import-url">从JSON导入URL</button>
       </div>
     </div>
+
+    <div id="json-root" class="root">
+      <div class="main-operation">
+        <button type="button" class="btn btn-primary" id="json-import-url">从JSON导入URL</button>
+        <button type="button" class="btn btn-primary" id="json-add-trigger">添加触发器</button>
+        <button type="button" class="btn btn-primary" id="json-add-propertity">添加采集字段</button>
+      </div>
+      <div id="json-config-box">
+        <textarea
+          id="json-config-textarea"
+          class="form-control config-textarea"
+          rows="30"
+        ></textarea>
+      </div>
+    </div>
+
+    <!-- 添加属性表单 -->
     <div class="form-modal" id="form-modal">
       <form class="form-horizontal form-modal-body">
         <div class="form-group">
@@ -163,7 +187,11 @@
         </div>
       </form>
     </div>
+
+    <!-- toast -->
     <div class="toast">toast</div>
+
+    <!-- 侧边历史记录 -->
     <div class="history-container">
       <template id="record-template">
         <div class="record-item">
@@ -172,6 +200,7 @@
         </div>
       </template>
     </div>
+
     <script>
       require('./renderProcess/index.js')();
     </script>
