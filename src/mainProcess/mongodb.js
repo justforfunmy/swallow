@@ -1,10 +1,11 @@
-const connect = require('../mongodb/connect');
 const mongoose = require('mongoose');
+const connect = require('../mongodb/connect');
 
 const getCollectionNames = async () => {
   const cols = await mongoose.connection.db.collections();
-  let colStrArr = [];
-  for (let c of cols) {
+  const colStrArr = [];
+  // eslint-disable-next-line no-restricted-syntax
+  for (const c of cols) {
     colStrArr.push(c.s.namespace.collection);
   }
   return colStrArr;

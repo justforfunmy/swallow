@@ -9,15 +9,15 @@ const { ipcRenderer } = require('electron');
 let targetForm = null;
 
 exports.getTargetForm = () => targetForm;
+// eslint-disable-next-line no-multi-assign
 const setTargetForm = (exports.setTargetForm = (form) => {
   targetForm = form;
 });
 class Form {
   constructor(options) {
+    this.dom = null;
     this.init(options);
   }
-
-  dom = null;
 
   init(options) {
     const clone = document.importNode(formTemplate.content, true);
@@ -28,7 +28,7 @@ class Form {
       formModal.style.display = 'block';
       setTargetForm(this);
     });
-    startBtn.addEventListener('click', (e) => {
+    startBtn.addEventListener('click', () => {
       const values = this.getValues();
       ipcRenderer.send('start-crawl', values);
     });
@@ -46,24 +46,27 @@ class Form {
   }
 
   initOptions(options) {
-    const { name, url, trigger, target, properties } = options;
-    const dom = this.dom;
+    const { name, url, trigger, target, pagination, properties } = options;
+    const { dom } = this;
     dom.querySelector('input[name="name"]').value = name;
     dom.querySelector('textarea[name="url"]').value = url;
     dom.querySelector('input[name="target"]').value = target;
     dom.querySelector('input[name="trigger"]').value = trigger;
+    dom.querySelector('input[name="pagination"]').value = pagination;
     properties.forEach((item) => {
+      // eslint-disable-next-line no-shadow
       const { name, selector, source } = item;
       this.addProperty(name, selector, source);
     });
   }
 
   reset() {
-    const dom = this.dom;
+    const { dom } = this;
     dom.querySelector('input[name="name"]').value = '';
     dom.querySelector('textarea[name="url"]').value = '';
     dom.querySelector('input[name="target"]').value = '';
     dom.querySelector('input[name="trigger"]').value = '';
+    dom.querySelector('input[name="pagination"]').value = '';
     const tbody = dom.querySelector('tbody');
     while (tbody.lastChild) {
       tbody.removeChild(tbody.lastChild);
@@ -71,14 +74,14 @@ class Form {
   }
 
   setUrl(url) {
-    const dom = this.dom;
+    const { dom } = this;
     dom.querySelector('textarea[name="url"]').value = url;
   }
 
   addProperty(field, selector, source) {
     const table = this.dom.querySelector('table');
     const tbody = table.querySelector('tbody');
-    let td = trTemplate.content.querySelectorAll('td');
+    const td = trTemplate.content.querySelectorAll('td');
     td[0].textContent = field;
     td[1].textContent = selector;
     td[2].textContent = source;
@@ -92,16 +95,18 @@ class Form {
   }
 
   getValues() {
-    const dom = this.dom;
+    const { dom } = this;
     const name = dom.querySelector('input[name="name"]').value;
     const url = dom.querySelector('textarea[name="url"]').value;
     const target = dom.querySelector('input[name="target"]').value;
     const trigger = dom.querySelector('input[name="trigger"]').value;
+    const pagination = dom.querySelector('input[name="pagination"]').value;
     const tbody = dom.querySelector('tbody');
     const trs = tbody.querySelectorAll('tr');
     const properties = [];
     trs.forEach((tr) => {
       const tds = tr.querySelectorAll('td');
+      // eslint-disable-next-line no-shadow
       const name = tds[0].innerText;
       const selector = tds[1].innerText;
       const source = tds[2].innerText;
@@ -111,7 +116,7 @@ class Form {
         source
       });
     });
-    return { name, url, trigger, target, properties };
+    return { name, url, trigger, target, pagination, properties };
   }
 }
 

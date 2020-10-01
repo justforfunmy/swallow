@@ -1,4 +1,4 @@
-const Application = require('spectron').Application;
+const { Application } = require('spectron');
 const assert = require('assert');
 const electronPath = require('electron'); // Require Electron from the binaries included in node_modules.
 const path = require('path');
@@ -28,11 +28,9 @@ describe('Application launch', function () {
     args: [path.join(__dirname, '..')]
   });
 
-  beforeEach(function () {
-    return app.start();
-  });
+  beforeEach(() => app.start());
 
-  afterEach(function () {
+  afterEach(() => {
     if (app && app.isRunning()) {
       return app.stop();
     }
@@ -61,17 +59,17 @@ describe('Application launch', function () {
     return assert.strictEqual(buttonText, '新建');
   });
 
-  it('should have only one url input when the application start', async () => {
+  it('should not have url input when the application start', async () => {
     await app.client.waitUntilWindowLoaded();
     const urlInput = await app.client.$$('textarea[name="url"]');
-    return assert.strictEqual(urlInput.length, 1);
+    return assert.strictEqual(urlInput.length, 0);
   });
 
-  it('should have at least two url input when the "新建" button pressed', async () => {
+  it('should have one url input when the "新建" button pressed', async () => {
     await app.client.waitUntilWindowLoaded();
     await (await app.client.$('#next-url')).click();
     const urlInput = await app.client.$$('textarea[name="url"]');
-    return assert.strictEqual(urlInput.length, 2);
+    return assert.strictEqual(urlInput.length, 1);
   });
 
   it('should succefully remove a url input', async () => {
@@ -79,7 +77,7 @@ describe('Application launch', function () {
     await (await app.client.$('#next-url')).click();
     await (await app.client.$('#delete-url')).click();
     const urlInput = await app.client.$$('textarea[name="url"]');
-    return assert.strictEqual(urlInput.length, 1);
+    return assert.strictEqual(urlInput.length, 0);
   });
 
   it('should modal display none when the application start', async () => {
@@ -91,6 +89,7 @@ describe('Application launch', function () {
 
   it('should open a modal when the "添加采集数据项" buttons pressed', async () => {
     await app.client.waitUntilWindowLoaded();
+    await (await app.client.$('#next-url')).click();
     const collectButtons = await app.client.$$('.collect-btn');
     await collectButtons[0].click();
     const modal = await app.client.$('#form-modal');

@@ -5,6 +5,7 @@
   "scripts": {
     "start": "electron  .",
     "dev": "electron --inspect .",
+    "lint": "eslint src --fix",
     "test": "mocha"
   },
   "dependencies": {
@@ -15,7 +16,10 @@
   "devDependencies": {
     "eslint": "^7.9.0",
     "eslint-config-airbnb-base": "^14.2.0",
+    "eslint-config-prettier": "^6.12.0",
+    "eslint-plugin-import": "^2.22.0",
     "mocha": "^7.1.2",
     "spectron": "^11.0.0"
-  }
+  },
+  "license": "MIT"
 }
