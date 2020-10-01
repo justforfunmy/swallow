@@ -19,7 +19,6 @@ const switchComp = document.querySelector('#switch-comp');
 const jsonConfigTextarea = document.querySelector('#json-config-textarea');
 const jsonImportUrl = document.querySelector('#json-import-url');
 const jsonReset = document.querySelector('#json-reset');
-const jsonAddTrigger = document.querySelector('')
 
 const initialConfig = {
   name: '',
