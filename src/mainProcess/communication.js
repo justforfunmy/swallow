@@ -2,7 +2,6 @@ const { ipcMain, dialog } = require('electron');
 const crawl = require('./crawl');
 const { getHistory } = require('../mongodb/history');
 const fs = require('fs');
-const path = require('path');
 
 ipcMain.on('start-crawl', (event, formData) => {
   console.log(formData);
