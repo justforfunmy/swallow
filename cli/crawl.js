@@ -1,16 +1,17 @@
+/* eslint-disable no-await-in-loop */
 const path = require('path');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
 
 function validate(config) {
   const { url, name, properties, targetSelector } = config;
-  if (name === '') {
+  if (!name) {
     return false;
   }
-  if (targetSelector === '') {
+  if (!targetSelector) {
     return false;
   }
-  if (!(Array.isArray(url) && url[0])) {
+  if (!url) {
     return false;
   }
   if (!(Array.isArray(properties) && url[0])) {
@@ -93,6 +94,18 @@ async function writeData(filename, data) {
   });
 }
 
+async function crawlUrl(page, resultList, options) {
+  const { url, actions, targetSelector, properties } = options;
+  await page.goto(url);
+  // 处理页面动作
+  await handleActions(page, actions);
+  // 处理滚动
+  await autoScroll(page);
+  // 抓取数据
+  const res = await grabData(page, targetSelector, properties);
+  resultList.push(...res);
+}
+
 async function crawl(config) {
   if (!validate(config)) {
     return console.error('invalid config');
@@ -104,31 +117,29 @@ async function crawl(config) {
     ignoreHTTPSErrors: true
   });
   console.log('browser start');
-  const processArray = url.map((item) => {
-    return async (list) => {
-      const page = await browser.newPage();
-      page.setDefaultNavigationTimeout(0);
-      await page.setViewport({ width: 1280, height: 800 });
-      try {
-        await page.goto(item);
-        // 处理页面动作
-        await handleActions(page, actions);
-        // 处理滚动
-        await autoScroll(page);
-        // 抓取数据
-        const res = await grabData(page, targetSelector, properties);
-        list.push(...res);
-        await page.close();
-      } catch (error) {
-        console.error('crawl error', error);
-      }
-    };
-  });
+
   const list = [];
-  for (let index = 0; index < processArray.length; index += 1) {
-    const process = processArray[index];
-    // eslint-disable-next-line no-await-in-loop
-    await process(list);
+  const page = await browser.newPage();
+  page.setDefaultNavigationTimeout(0);
+  await page.setViewport({ width: 1280, height: 800 });
+  try {
+    // 爬取首页
+    await crawlUrl(page, list, { url, actions, targetSelector, properties });
+    // 处理分页
+    const { count, nextpageSelector } = pagination;
+    let idx = 1;
+    while (idx < count) {
+      const [response] = await Promise.all([
+        page.waitForNavigation(),
+        page.click(nextpageSelector)
+      ]);
+      // eslint-disable-next-line no-underscore-dangle
+      await crawlUrl(page, list, { url: response._url, actions, targetSelector, properties });
+      idx += 1;
+    }
+    await page.close();
+  } catch (error) {
+    console.error('crawl error', error);
   }
   await writeData(name, list);
   await browser.close();
