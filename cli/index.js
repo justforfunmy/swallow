@@ -9,6 +9,13 @@ program
   .action(() => {
     const { source } = program.opts();
     crawl(source);
-  });
+	});
+
+program
+.command('init <name>')
+.description('init config')
+.action(({name})=>{
+	
+})
 
 program.parse(process.argv);
