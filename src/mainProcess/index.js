@@ -1,2 +1,0 @@
-require('./communication');
-require('./mongodb');
