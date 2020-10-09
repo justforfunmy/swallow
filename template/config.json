@@ -1,0 +1,32 @@
+{
+  "name": "<%= name %>",
+  "url": "",
+  "actions": [
+    {
+      "type": "",
+      "selector": ""
+    }
+  ],
+  "pagination": {
+    "count": 1,
+    "nextpageSelector": ""
+  },
+  "targetSelector": "",
+  "properties": [
+    {
+      "name": "",
+      "selector": "",
+      "source": ""
+    },
+    {
+      "name": "",
+      "selector": "",
+      "source": ""
+    },
+    {
+      "name": "",
+      "selector": "",
+      "source": ""
+    }
+  ]
+}

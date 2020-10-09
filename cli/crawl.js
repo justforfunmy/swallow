@@ -2,6 +2,7 @@
 const path = require('path');
 const fs = require('fs');
 const puppeteer = require('puppeteer');
+const chalk = require('chalk');
 
 function validate(config) {
   const { url, name, properties, targetSelector } = config;
@@ -41,6 +42,7 @@ async function handleActions(page, actions) {
 
 async function autoScroll(page) {
   await page.evaluate(async () => {
+    // eslint-disable-next-line no-unused-vars
     await new Promise((resolve, reject) => {
       let totalHeight = 0;
       const distance = 100;
@@ -48,7 +50,6 @@ async function autoScroll(page) {
         const { scrollHeight } = document.body;
         window.scrollBy(0, distance);
         totalHeight += distance;
-
         if (totalHeight >= scrollHeight) {
           clearInterval(timer);
           resolve();
@@ -87,9 +88,9 @@ async function writeData(filename, data) {
   const destination = path.resolve(process.cwd(), `${filename}.json`);
   fs.writeFile(destination, JSON.stringify(data, null, 2), (error) => {
     if (error) {
-      console.error('write error', error);
+      console.error(chalk.redBright('write error'), error);
     } else {
-      console.log('write succefully');
+      console.log(chalk.greenBright('write succefully'));
     }
   });
 }
@@ -108,7 +109,7 @@ async function crawlUrl(page, resultList, options) {
 
 async function crawl(config) {
   if (!validate(config)) {
-    return console.error('invalid config');
+    return console.error(chalk.redBright('invalid config'));
   }
   const { name, url, actions, targetSelector, pagination, properties } = config;
   // 启动浏览器
@@ -116,31 +117,39 @@ async function crawl(config) {
     headless: false,
     ignoreHTTPSErrors: true
   });
-  console.log('browser start');
+  console.log(chalk.yellowBright('browser start'));
 
   const list = [];
   const page = await browser.newPage();
   page.setDefaultNavigationTimeout(0);
   await page.setViewport({ width: 1280, height: 800 });
-  try {
-    // 爬取首页
-    await crawlUrl(page, list, { url, actions, targetSelector, properties });
-    // 处理分页
-    const { count, nextpageSelector } = pagination;
-    let idx = 1;
-    while (idx < count) {
-      const [response] = await Promise.all([
-        page.waitForNavigation(),
-        page.click(nextpageSelector)
-      ]);
-      // eslint-disable-next-line no-underscore-dangle
-      await crawlUrl(page, list, { url: response._url, actions, targetSelector, properties });
-      idx += 1;
+  if (Array.isArray(url)) {
+    for (let index = 0, len = url.length; index < len; index += 1) {
+      const item = url[index];
+      await crawlUrl(page, list, { url: item, actions, targetSelector, properties });
     }
-    await page.close();
-  } catch (error) {
-    console.error('crawl error', error);
+  } else {
+    try {
+      // 爬取首页
+      await crawlUrl(page, list, { url, actions, targetSelector, properties });
+      // 处理分页
+      const { count, nextpageSelector } = pagination;
+      let idx = 1;
+      while (idx < count) {
+        const [response] = await Promise.all([
+          page.waitForNavigation(),
+          page.click(nextpageSelector)
+        ]);
+        // eslint-disable-next-line no-underscore-dangle
+        await crawlUrl(page, list, { url: response._url, actions, targetSelector, properties });
+        idx += 1;
+      }
+      await page.close();
+    } catch (error) {
+      console.error('crawl error', error);
+    }
   }
+
   await writeData(name, list);
   await browser.close();
   return true;
@@ -150,7 +159,7 @@ module.exports = (src) => {
   const configPath = path.join(process.cwd(), src);
 
   if (!fs.existsSync(configPath)) {
-    console.error('invalid config source');
+    console.error(chalk.redBright('invalid config source'));
   } else {
     // 读取配置文件
     let config = fs.readFileSync(configPath);

@@ -1,19 +1,19 @@
 {
   "name": "swallow",
   "version": "1.0.0",
-  "main": "./src/main.js",
   "bin": {
     "swallow": "./bin/www"
   },
   "scripts": {
-    "start": "electron  .",
-    "dev": "electron --inspect .",
-    "lint": "eslint src --fix",
-    "test": "mocha"
+    "lint": "eslint cli --fix"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "commander": "^6.1.0",
+    "ejs": "^3.1.5",
     "electron": "^9.0.0",
+    "inquirer": "^7.3.3",
+    "metalsmith": "^2.3.0",
     "mongoose": "^5.10.6",
     "puppeteer": "^5.3.0"
   },
