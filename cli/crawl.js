@@ -104,7 +104,11 @@ async function crawlUrl(page, resultList, options) {
   await autoScroll(page);
   // 抓取数据
   const res = await grabData(page, targetSelector, properties);
-  resultList.push(...res);
+  resultList.push(
+    ...res.map((item) => {
+      return { ...item, current: url };
+    })
+  );
 }
 
 async function crawl(config) {
@@ -117,7 +121,7 @@ async function crawl(config) {
     headless: false,
     ignoreHTTPSErrors: true
   });
-  console.log(chalk.yellowBright('browser start'));
+  console.log(chalk.yellowBright('grabing...'));
 
   const list = [];
   const page = await browser.newPage();
