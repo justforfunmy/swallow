@@ -5,7 +5,7 @@
     "swallow": "./bin/www"
   },
   "scripts": {
-    "lint": "eslint cli --fix"
+    "test": "eslint cli --fix"
   },
   "dependencies": {
     "chalk": "^4.1.0",
