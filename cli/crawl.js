@@ -160,7 +160,12 @@ async function crawl(config) {
 }
 
 module.exports = (src) => {
-  const configPath = path.join(process.cwd(), src);
+  let configPath;
+  if (!src) {
+    configPath = path.join(process.cwd(), 'config.json');
+  } else {
+    configPath = path.join(process.cwd(), src);
+  }
 
   if (!fs.existsSync(configPath)) {
     console.error(chalk.redBright('invalid config source'));
