@@ -1,4 +1,4 @@
-# swallow 网页爬取工具
+# swallows 网页爬取工具
 
 ## 目录
 
@@ -10,7 +10,7 @@
 ## 安装
 
 ```Shell
-yarn add swallow --global
+yarn add swallows --global
 ```
 
 ## 使用
@@ -18,7 +18,7 @@ yarn add swallow --global
 - init
 
 ```Shell
-swallow init
+swallows init
 ```
 
 初始化并生成配置文件`config.json`。`config.json`具体配置见[配置选项](#配置选项)
@@ -26,7 +26,7 @@ swallow init
 - crawl
 
 ```Shell
-swallow crawl
+swallows crawl
 ```
 
 默认读取当前运行目录下的`config.json`作为配置，并运行爬虫程序。
@@ -34,7 +34,7 @@ swallow crawl
 或者可以自定义配置文件路径，**以当前运行目录为参照的相对路径**。
 
 ```Shell
-swallow crawl -src ../config.json
+swallows crawl -src ../config.json
 ```
 
 - importUrls
@@ -99,7 +99,7 @@ swallow crawl -src ../config.json
 1. 初始化
 
 ```Shell
-swallow init
+swallows init
 ```
 
 按照命令行提示输入名称"imdb250",然后可以看到生成 imdb250 文件夹，里面包含`config.json`。
@@ -146,7 +146,7 @@ swallow init
 3. 启动程序
 
 ```Shell
-swallow crawl
+swallows crawl
 ```
 
 完成后会生成`imdb250.json`。
